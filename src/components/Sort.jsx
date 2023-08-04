@@ -1,4 +1,17 @@
+import React from 'react';
+
 const Sort = () => {
+  const [isVisible, setIsVisible] = React.useState(false);
+  const [activeCriteria, setActiveCriteria] = React.useState(0);
+
+  const onClickCriteria = (item) => {
+    setActiveCriteria(item);
+    setIsVisible(false);
+  }
+
+  const sortCriteria = ['популярности', 'цене', 'алфавиту']
+  const sortName = sortCriteria[activeCriteria];
+
   return ( 
     <div className="sort">
                 <div className="sort__label">
@@ -15,15 +28,26 @@ const Sort = () => {
                     />
                   </svg>
                   <b>Сортировка по:</b>
-                  <span>популярности</span>
+                  <span onClick={() => setIsVisible(!isVisible)}>{sortName}</span>
                 </div>
+                {isVisible && (
                 <div className="sort__popup">
                   <ul>
-                    <li className="active">популярности</li>
+                    {
+                      sortCriteria.map((item, i) => (
+                        <li key={item} 
+                        onClick={() => onClickCriteria(i)} 
+                        className={activeCriteria === item ? "active" : ""}>
+                          {item}
+                        </li>
+                      ))
+                    }
+                    {/* <li className="active">популярности</li>
                     <li>цене</li>
-                    <li>алфавиту</li>
+                    <li>алфавиту</li> */}
                   </ul>
                 </div>
+                )}
               </div>
    );
 }
