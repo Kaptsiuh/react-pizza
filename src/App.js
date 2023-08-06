@@ -10,6 +10,13 @@ import pizzas from "./assets/pizzas.json";
 import "./scss/app.scss";
 
 function App() {
+  // http://localhost:3666/items
+  fetch("http://localhost:3666/items")
+    .then((res) => {
+      return res.json();
+    })
+    .then((json) => console.log(json));
+
   return (
     <>
       <div className="wrapper">
