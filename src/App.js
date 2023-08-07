@@ -5,17 +5,18 @@ import Categories from "./components/Categories";
 import Sort from "./components/Sort";
 import PizzaBlock from "./components/PizzaBlock";
 
-import pizzas from "./assets/pizzas.json";
+// import pizzas from "./assets/pizzas.json";
 
 import "./scss/app.scss";
 
 function App() {
-  // http://localhost:3666/items
-  fetch("http://localhost:3666/items")
-    .then((res) => {
-      return res.json();
-    })
-    .then((json) => console.log(json));
+  const [items, setItems] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch("http://localhost:3666/items")
+      .then((res) => res.json())
+      .then((arr) => setItems(arr));
+  }, []);
 
   return (
     <>
@@ -29,7 +30,7 @@ function App() {
             </div>
             <h2 className="content__title">Все пиццы</h2>
             <div className="content__items">
-              {pizzas.map((obj) => (
+              {items.map((obj) => (
                 <PizzaBlock key={obj.id} {...obj} />
               ))}
             </div>
