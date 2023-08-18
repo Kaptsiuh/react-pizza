@@ -21,6 +21,7 @@ export const Home = () => {
   const sortType = sort.sortProperty;
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
+  const isMounted = React.useRef(false);
 
 
   const { searchValue } = React.useContext(SearchContext);
@@ -36,8 +37,32 @@ export const Home = () => {
   }
   
   const fetchPizzas = () => {
+    setIsLoading(true);
 
+    const sortBy = sortType.replace('-', '');
+    const order = sortType.includes('-') ? 'asc' : 'desc';
+    const category = categoryId > 0 ? `category=${categoryId}` : '';
+    const search = searchValue ? `q=${searchValue}` : '';
+
+    axios.get(`http://localhost:3666/items?_page=${currentPage}&_limit=4&${category}&_sort=${sortBy}&_order=${order}&${search}`)
+    .then(res => {
+      setItems(res.data);
+      setIsLoading(false);
+    })
   }
+
+  React.useEffect(() => {
+    if(isMounted.current) {
+      const queryString = qs.stringify({
+        sortProperty: sort.sortProperty,
+        categoryId,
+        currentPage
+      });
+  
+      navigate(`?${queryString}`)
+    }
+    isMounted.current = true;
+  }, [categoryId, sortType, currentPage]);
 
   React.useEffect(() => {
     if (window.location.search) {
@@ -56,30 +81,14 @@ export const Home = () => {
   }, []);
 
   React.useEffect(() => {
-    setIsLoading(true);
+    window.scrollTo(0, 0);
 
-    const sortBy = sortType.replace('-', '');
-    const order = sortType.includes('-') ? 'asc' : 'desc';
-    const category = categoryId > 0 ? `category=${categoryId}` : '';
-    const search = searchValue ? `q=${searchValue}` : '';
+    if (!isSearch.current) {
+      fetchPizzas();
+    }
 
-    axios.get(`http://localhost:3666/items?_page=${currentPage}&_limit=4&${category}&_sort=${sortBy}&_order=${order}&${search}`)
-    .then(res => {
-      setItems(res.data);
-      setIsLoading(false);
-    })
-      window.scrollTo(0, 0);
+    isSearch.current = false;
   }, [categoryId, sortType, searchValue, currentPage]);
-
-  React.useEffect(() => {
-    const queryString = qs.stringify({
-      sortProperty: sort.sortProperty,
-      categoryId,
-      currentPage
-    });
-
-    navigate(`?${queryString}`)
-  }, [categoryId, sortType, currentPage]);
 
   const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(6)].map((_, i) => <Skeleton key={i} />);
