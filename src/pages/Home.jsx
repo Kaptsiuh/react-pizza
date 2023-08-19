@@ -8,8 +8,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { setCategoryId, setCurrentPage, setFilters } from '../redux/slices/filterSlice';
 import Categories from "../components/Categories";
-import Sort from "../components/Sort";
-import sortCriteria from "../components/Sort";
+import { Sort } from "../components/Sort";
+import { sortCriteria } from "../components/Sort";
 import PizzaBlock from "../components/pizzaBlock";
 import Skeleton from "../components/pizzaBlock/Skeleton";
 import Pagination from '../components/pagination';
@@ -28,9 +28,9 @@ export const Home = () => {
   const [items, setItems] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
 
-  const onChangeCategory = (id) => {
+  const onChangeCategory = React.useCallback((id) => {
     dispatch(setCategoryId(id));
-  }
+  }, []);
 
   const onChangePage = (number) => {
     dispatch(setCurrentPage(number));
@@ -51,7 +51,7 @@ export const Home = () => {
     })
   }
 
-  React.useEffect(() => {
+    React.useEffect(() => {
     if(isMounted.current) {
       const queryString = qs.stringify({
         sortProperty: sort.sortProperty,
@@ -62,19 +62,19 @@ export const Home = () => {
       navigate(`?${queryString}`)
     }
     isMounted.current = true;
-  }, [categoryId, sortType, currentPage]);
+  }, [categoryId, sort.sortProperty, currentPage]);
 
   React.useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(window.location.search.substring(1));
-
-      const sort = sortCriteria.find(obj => obj.sortProperty === params.sortProperty)
+      
+      const sort = sortCriteria.find((obj) => obj.sortProperty === params.sortProperty);
 
       dispatch(
-        setFilters(
+        setFilters({
           ...params,
           sort,
-        )
+        })
       );
       isSearch.current = true
     }
@@ -88,7 +88,7 @@ export const Home = () => {
     }
 
     isSearch.current = false;
-  }, [categoryId, sortType, searchValue, currentPage]);
+  }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   const pizzas = items.map((obj) => <PizzaBlock key={obj.id} {...obj} />);
   const skeletons = [...new Array(6)].map((_, i) => <Skeleton key={i} />);
