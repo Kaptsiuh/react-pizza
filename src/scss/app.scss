@@ -50,6 +50,11 @@ body {
     }
   }
 
+  &__items-cart {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__top {
     display: flex;
     align-items: center;
