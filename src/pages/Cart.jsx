@@ -4,10 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import CartItem from '../components/Search/CartItem';
 import { clearItems } from '../redux/slices/cartSlice';
+import CartEmpty from '../components/CartEmpty';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart.items);
+  const { totalPrice, items } = useSelector((state) => state.cart);
+
+  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
 
   const onClickClear = () => {
     if (window.confirm('Clear cart?')) {
@@ -15,6 +18,10 @@ const Cart = () => {
     }
   };
 
+  if (!totalPrice) {
+    return <CartEmpty />
+  }
+  
   return ( 
   <div className="container container--cart">
     <div className="cart">
@@ -85,7 +92,6 @@ const Cart = () => {
       </div>
       <div className="content__items content__items-cart">
         {items.map((item) => (
-          console.log(item),
           <CartItem key={item.id} {...item} />
         ))}
       </div>
@@ -93,11 +99,11 @@ const Cart = () => {
         <div className="cart__bottom-details">
           <span>
             {' '}
-            Всего пицц: <b>3 шт.</b>{' '}
+            Всего пицц: <b>{totalCount} шт.</b>{' '}
           </span>
           <span>
             {' '}
-            Сумма заказа: <b>900 ₽</b>{' '}
+            Сумма заказа: <b>{totalPrice} ₽</b>{' '}
           </span>
         </div>
         <div className="cart__bottom-buttons">

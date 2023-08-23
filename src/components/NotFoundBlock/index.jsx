@@ -6,12 +6,12 @@ const NotFoundBlock = () => {
   return (
     <div className="container">
       <div className={styles.root}>
-      <h1> 
-        <span>&#128543;</span>
-        <br />
-        Not Found 
-      </h1>
-    </div>
+        <h1> 
+          <span>&#128543;</span>
+          <br />
+          Not Found 
+        </h1>
+      </div>
     </div> 
    );
 }
