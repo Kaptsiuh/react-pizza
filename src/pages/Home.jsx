@@ -16,7 +16,7 @@ import { fetchPizzas } from '../redux/slices/pizzasSlice';
 export const Home = () => {
   const dispatch = useDispatch();
   const { categoryId, sort, currentPage } = useSelector(state => state.filter);
-  const {items, status} = useSelector(state => state.pizza);
+  const { items, status } = useSelector(state => state.pizza);
   const sortType = sort.sortProperty;
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
@@ -93,9 +93,20 @@ export const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading ? skeletons : pizzas}
-      </div>
+      {
+        status === 'error' ? (
+          <div className='content__error-info'>
+            <h2>Error</h2>
+            <p>
+              We can't get a pizzas.
+            </p>
+          </div>
+        ) : (
+          <div className="content__items">
+            {status === 'loading' ? skeletons : pizzas}
+          </div>
+        )
+      }
       <Pagination currentPage={currentPage} onChangePage={onChangePage}/>
     </div>
    );

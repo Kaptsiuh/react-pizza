@@ -31,7 +31,7 @@ const pizzasSlice = createSlice({
       state.items = [];
     },
     [fetchPizzas.fulfilled]: (state, action) => {
-      state.items = action.pauload;
+      state.items = action.payload;
       state.status = "success";
     },
     [fetchPizzas.rejected]: (state, action) => {
