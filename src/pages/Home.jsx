@@ -10,20 +10,19 @@ import { sortCriteria } from "../components/Sort";
 import PizzaBlock from "../components/pizzaBlock";
 import Skeleton from "../components/pizzaBlock/Skeleton";
 import Pagination from '../components/pagination';
-import { SearchContext } from '../App';
+// import { SearchContext } from '../App';
 import { fetchPizzas } from '../redux/slices/pizzasSlice';
+import { selectPizzaItems } from '../redux/slices/pizzasSlice';
+import { selectFilter } from '../redux/slices/filterSlice';
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const { categoryId, sort, currentPage } = useSelector(state => state.filter);
-  const { items, status } = useSelector(state => state.pizza);
+  const { categoryId, sort, currentPage, searchValue } = useSelector(selectFilter);
+  const { items, status } = useSelector(selectPizzaItems);
   const sortType = sort.sortProperty;
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
   const isMounted = React.useRef(false);
-
-
-  const { searchValue } = React.useContext(SearchContext);
 
   const onChangeCategory = React.useCallback((id) => {
     dispatch(setCategoryId(id));
