@@ -17,12 +17,13 @@ import Pagination from "../components/pagination";
 import { fetchPizzas } from "../redux/slices/pizzasSlice";
 import { selectPizzaItems } from "../redux/slices/pizzasSlice";
 import { selectFilter } from "../redux/slices/filterSlice";
+import { useAppDispatch } from "../redux/store";
 
 export const Home: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  const { items, status } = useSelector(selectPizzaItems);
   const { categoryId, sort, currentPage, searchValue } =
     useSelector(selectFilter);
-  const { items, status } = useSelector(selectPizzaItems);
   const sortType = sort.sortProperty;
   const navigate = useNavigate();
   const isSearch = React.useRef(false);
@@ -43,7 +44,6 @@ export const Home: React.FC = () => {
     const search = searchValue ? `q=${searchValue}` : "";
 
     dispatch(
-      // @ts-ignore
       fetchPizzas({
         sortBy,
         order,
