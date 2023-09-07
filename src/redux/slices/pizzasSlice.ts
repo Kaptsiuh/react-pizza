@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
+import { Sort } from "./filterSlice";
 
 type Pizza = {
   id: string;
@@ -16,6 +17,14 @@ export enum Status {
   LOADING = 'loading',
   SUCCES = 'success',
   ERROR = 'error',
+}
+
+export type SearchPizzaParams = {
+  sortBy: Sort;
+  order: string;
+  category: string;
+  search: string;
+  currentPage: string;
 }
 
 export const fetchPizzas = createAsyncThunk<Pizza[], Record<string, string>>(

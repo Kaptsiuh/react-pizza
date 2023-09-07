@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 import {
+  FilterSliceState,
   setCategoryId,
   setCurrentPage,
   setFilters,
@@ -14,7 +15,7 @@ import { sortCriteria } from "../components/Sort";
 import PizzaBlock from "../components/pizzaBlock";
 import Skeleton from "../components/pizzaBlock/Skeleton";
 import Pagination from "../components/pagination";
-import { fetchPizzas } from "../redux/slices/pizzasSlice";
+import { SearchPizzaParams, fetchPizzas } from "../redux/slices/pizzasSlice";
 import { selectPizzaItems } from "../redux/slices/pizzasSlice";
 import { selectFilter } from "../redux/slices/filterSlice";
 import { useAppDispatch } from "../redux/store";
@@ -49,7 +50,7 @@ export const Home: React.FC = () => {
         order,
         category,
         search,
-        currentPage,
+        currentPage: String(currentPage),
       })
     );
 
@@ -58,11 +59,13 @@ export const Home: React.FC = () => {
 
   React.useEffect(() => {
     if (isMounted.current) {
-      const queryString = qs.stringify({
+      const params = {
         sortProperty: sort.sortProperty,
-        categoryId,
+        categoryId: categoryId > 0 ? categoryId : null,
         currentPage,
-      });
+      };
+
+      const queryString = qs.stringify(params, { skipNulls: true });
 
       navigate(`?${queryString}`);
     }
@@ -71,24 +74,21 @@ export const Home: React.FC = () => {
 
   React.useEffect(() => {
     if (window.location.search) {
-      const params = qs.parse(window.location.search.substring(1));
+      const params = qs.parse(
+        window.location.search.substring(1)
+      ) as unknown as SearchPizzaParams;
 
       const sort = sortCriteria.find(
-        (obj) => obj.sortProperty === params.sortProperty
+        (obj) => obj.sortProperty === params.sortBy
       );
 
-      dispatch(
-        setFilters({
-          ...params,
-          sort,
-        })
-      );
+      dispatch(setFilters({ params }));
       isSearch.current = true;
     }
   }, []);
 
   React.useEffect(() => {
-    getPizzas();
+    dispatch(getPizzas({}));
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   const pizzas = items.map((obj: any) => (

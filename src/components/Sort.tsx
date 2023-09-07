@@ -1,11 +1,11 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSort } from "../redux/slices/filterSlice";
+import { Sort, setSort } from "../redux/slices/filterSlice";
 import { selectSort } from "../redux/slices/cartSlice";
 
 type SortItem = {
   name: string;
-  sortProperty: string;
+  sortProperty: Sort;
 };
 
 type PopupClick = MouseEvent & {
@@ -21,7 +21,7 @@ export const sortCriteria: SortItem[] = [
   { name: "алфавиту (ABC)", sortProperty: "-title" },
 ];
 
-export const Sort = () => {
+export const SortPopup = () => {
   const dispatch = useDispatch();
   const sort = useSelector(selectSort);
   const sortRef = React.useRef<HTMLDivElement>(null);
