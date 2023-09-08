@@ -69,26 +69,34 @@ export const Home: React.FC = () => {
 
       navigate(`?${queryString}`);
     }
+
     isMounted.current = true;
   }, [categoryId, sort.sortProperty, currentPage]);
 
   React.useEffect(() => {
     if (window.location.search) {
       const params = qs.parse(
-        window.location.search.substring(1)
-      ) as unknown as SearchPizzaParams;
+        window.location.search.substring(1) as unknown as SearchPizzaParams
+      );
 
       const sort = sortCriteria.find(
         (obj) => obj.sortProperty === params.sortBy
       );
 
-      dispatch(setFilters({ params }));
+      dispatch(
+        setFilters({
+          searchValue: params.search,
+          categoryId: Number(params.category),
+          currentPage: Number(params.currentPage),
+          sort: sort ? sort : sortCriteria[0],
+        })
+      );
       isSearch.current = true;
     }
   }, []);
 
   React.useEffect(() => {
-    dispatch(getPizzas({}));
+    dispatch(getPizzas({} as SearchPizzaParams));
   }, [categoryId, sort.sortProperty, searchValue, currentPage]);
 
   const pizzas = items.map((obj: any) => (

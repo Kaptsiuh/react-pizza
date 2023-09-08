@@ -20,7 +20,7 @@ export enum Status {
 }
 
 export type SearchPizzaParams = {
-  sortBy: Sort;
+  sortBy: string;
   order: string;
   category: string;
   search: string;
